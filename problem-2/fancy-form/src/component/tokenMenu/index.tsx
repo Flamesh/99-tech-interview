@@ -1,10 +1,8 @@
-import * as React from "react";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
+import React, {useEffect, useState, useRef} from "react";
 import Grow from "@mui/material/Grow";
 import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
-import MenuList from "@mui/material/MenuList";
 import Stack from "@mui/material/Stack";
 import type { ITokenData } from "../../typings/swap";
 import type { IUserBalance } from "../../typings/user";
@@ -23,8 +21,12 @@ export default function TokenMenu({
   userBalance,
   tokenSymbol,
 }: TokenMenuProps) {
-  const [open, setOpen] = React.useState(false);
-  const anchorRef = React.useRef<HTMLButtonElement>(null);
+  const [open, setOpen] = useState(false);
+  const anchorRef = useRef<HTMLButtonElement>(null);
+
+  const [listTokenState, setListTokenState] = useState<ITokenData[]>(listToken);
+  const [searchKeyword, setSearchKeyword] = useState("");
+  
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -41,24 +43,33 @@ export default function TokenMenu({
     setOpen(false);
   };
 
-  function handleListKeyDown(event: React.KeyboardEvent) {
-    if (event.key === "Tab") {
-      event.preventDefault();
-      setOpen(false);
-    } else if (event.key === "Escape") {
-      setOpen(false);
-    }
-  }
-
-  // return focus to the button when we transitioned from !open -> open
-  const prevOpen = React.useRef(open);
-  React.useEffect(() => {
+  const prevOpen = useRef(open);
+  useEffect(() => {
     if (prevOpen.current === true && open === false) {
       anchorRef.current!.focus();
     }
 
     prevOpen.current = open;
   }, [open]);
+
+  useEffect(() => {
+    let timer = null;
+    if (searchKeyword) {
+      timer = setTimeout(() => {
+        const filteredTokens = listToken.filter((token) =>
+          token.currency.toLowerCase().includes(searchKeyword.toLowerCase())
+        );
+        setListTokenState(filteredTokens);
+      }, 300);
+    } else {
+      setListTokenState(listToken);
+    }
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, [searchKeyword, listToken]);
 
   return (
     <Stack direction="row" spacing={2}>
@@ -89,19 +100,28 @@ export default function TokenMenu({
               }}
             >
               <Paper>
-                <MenuList
-                  autoFocusItem={open}
-                  aria-labelledby="composition-button"
-                  onKeyDown={handleListKeyDown}
-                  className="bg-gray-800 text-white h-[300px] w-[200px] overflow-y-auto"
-                >
-                  {listToken.map((token, index) => (
+                <div className="bg-gray-800 text-white w-[200px] h-[300px] overflow-y-auto">
+                  <div className="sticky top-0 z-10">
+                    <input
+                      type="text"
+                      placeholder="Search tokens"
+                      className="w-full p-2 bg-gray-700 border border-gray-600 text-white text-sm focus:outline-none focus:border-blue-500"
+                      value={searchKeyword}
+                      onChange={(e) => {
+                        e.preventDefault();
+                        setSearchKeyword(e.target.value);
+                      }}
+                    />
+                   
+                  </div>
+                  {listTokenState.map((token, index) => (
                     <MenuItem
                       key={token.currency + index}
                       onClick={(event) => {
                         onTokenSelect(token);
                         handleClose(event);
                       }}
+                      disableRipple
                       sx={{
                         "&:hover": {
                           backgroundColor: "#f2f7f7",
@@ -123,7 +143,7 @@ export default function TokenMenu({
                       </div>
                     </MenuItem>
                   ))}
-                </MenuList>
+                </div>
               </Paper>
             </Grow>
           )}
