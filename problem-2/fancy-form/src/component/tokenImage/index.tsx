@@ -11,9 +11,9 @@ export default function SymbolImage({ symbol, height = 6, width = 6 }: SymbolIma
         <img
             src={`/tokens/${symbol}.svg`}
             alt={symbol}
-            className={`w-${width} h-${height}`}
-            width={`${width}rem`}
-            height={`${height}rem`}
+            className={`rounded-full w-[${width}px] h-[${height}px] object-cover`}
+            width={`${width}px`}
+            height={`${height}px`}
         />
     );
 }

@@ -7,6 +7,7 @@ import Stack from "@mui/material/Stack";
 import type { ITokenData } from "../../typings/swap";
 import type { IUserBalance } from "../../typings/user";
 import SymbolImage from "../tokenImage";
+import { isLandscape, isMobileDevice } from "../../utils/device";
 
 interface TokenMenuProps {
   listToken: ITokenData[];
@@ -21,6 +22,7 @@ export default function TokenMenu({
   userBalance,
   tokenSymbol,
 }: TokenMenuProps) {
+  const isMobileLandscape = isMobileDevice() && isLandscape();
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLButtonElement>(null);
 
@@ -77,9 +79,9 @@ export default function TokenMenu({
         <button
           ref={anchorRef}
           onClick={handleToggle}
-          className="flex items-center gap-2 bg-gray-800 rounded-lg p-2 w-[100px] hover:bg-[#15274f] cursor-pointer"
+          className={`flex items-center gap-2 bg-gray-800 rounded-lg p-2 w-[100px] hover:bg-[#15274f] cursor-pointer ${open ? "border border-blue-300" : ""}`}
         >
-          <SymbolImage symbol={tokenSymbol} />
+          <SymbolImage symbol={tokenSymbol} width={25} height={25} />
           <p className="text-[10px] text-gray-400">{tokenSymbol}</p>
         </button>
         <Popper
@@ -100,7 +102,7 @@ export default function TokenMenu({
               }}
             >
               <Paper>
-                <div className="bg-gray-800 text-white w-[200px] h-[300px] overflow-y-auto">
+                <div className={`bg-gray-800 text-white w-[200px] overflow-y-auto ${isMobileLandscape ? "max-h-[170px]" : "max-h-[300px]"}`}>
                   <div className="sticky top-0 z-10">
                     <input
                       type="text"
@@ -130,7 +132,7 @@ export default function TokenMenu({
                     >
                       <div className="flex justify-between items-center w-full mt-1">
                         <div className="flex items-center gap-1">
-                          <SymbolImage symbol={token.currency} />
+                          <SymbolImage symbol={token.currency} width={20} height={20} />
                           <p className="text-[13px] text-gray-400">
                             {token.currency}
                           </p>

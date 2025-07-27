@@ -9,11 +9,13 @@ import Loading from "../../component/loading";
 import type { IUserBalance } from "../../typings/user";
 import { fetchUserBalance } from "../../api/userBalance";
 import { calcRate, formatNumber } from "../../utils/calcRate";
-import AnimationButton from '../../component/button'
+import AnimationButton from "../../component/button";
 import "./index.scss";
-import {toast} from 'react-toastify';
+import { toast } from "react-toastify";
 
 const SwapPage = () => {
+  
+
   const [fromAmount, setFromAmount] = useState(0);
   const [toAmount, setToAmount] = useState(0);
 
@@ -79,8 +81,7 @@ const SwapPage = () => {
     }
   }, [fromAmount, fromToken, toToken]);
 
-
-  useEffect(() => { 
+  useEffect(() => {
     if (fromToken && fromAmount > 0) {
       const balance = userBalance.find(
         (item) => item.symbol === fromToken.currency
@@ -97,12 +98,12 @@ const SwapPage = () => {
     }
   }, [fromToken, fromAmount, userBalance]);
 
-  useEffect(() => { 
+  useEffect(() => {
     setErrorSwap(null);
-  }, [fromToken])
+  }, [fromToken]);
 
-  async function handleSwap() { 
-    try { 
+  async function handleSwap() {
+    try {
       setExchangeLoading(true);
       if (fromToken && toToken) {
         const response = await exChangeTokenApi(fromToken, toToken, fromAmount);
@@ -118,14 +119,18 @@ const SwapPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
-      <img src="/public/99Tech.png" alt="99Tech Logo" className="absolute top-4 left-4 w-24 h-auto" />
+    <div
+      className={`min-h-screen bg-gray-900 flex items-center justify-center p-4`}
+    >
+      <img
+        src="/public/99Tech.png"
+        alt="99Tech Logo"
+        className="absolute top-4 left-4 w-24 h-auto"
+      />
       {(tokenLoading || userBalanceLoading) && (
         <Loading text="Loading tokens..." />
       )}
-      {exchangeLoading && (
-        <Loading text="Exchanging tokens..." />
-      )}
+      {exchangeLoading && <Loading text="Exchanging tokens..." />}
       <div className="bg-gray-800 rounded-xl w-full max-w-md p-6 swap-page-container">
         <div className="mb-6">
           <h1 className="text-white text-xl font-bold">Swap</h1>
@@ -171,7 +176,12 @@ const SwapPage = () => {
             </div>
           </div>
         )}
-        <AnimationButton onClick={handleSwap} disabled={!fromToken || !toToken || fromAmount <= 0 || errorSwap !== null}>
+        <AnimationButton
+          onClick={handleSwap}
+          disabled={
+            !fromToken || !toToken || fromAmount <= 0 || errorSwap !== null
+          }
+        >
           Swap Tokens
         </AnimationButton>
       </div>
