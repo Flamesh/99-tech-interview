@@ -8,6 +8,7 @@ import type { ITokenData } from "../../typings/swap";
 import type { IUserBalance } from "../../typings/user";
 import SymbolImage from "../tokenImage";
 import { isLandscape, isMobileDevice } from "../../utils/device";
+import "./index.scss";
 
 interface TokenMenuProps {
   listToken: ITokenData[];
@@ -74,7 +75,7 @@ export default function TokenMenu({
   }, [searchKeyword, listToken]);
 
   return (
-    <Stack direction="row" spacing={2}>
+    <Stack direction="row" spacing={2} className="token-menu-container">
       <div>
         <button
           ref={anchorRef}
@@ -102,7 +103,7 @@ export default function TokenMenu({
               }}
             >
               <Paper>
-                <div className={`bg-gray-800 text-white w-[200px] overflow-y-auto ${isMobileLandscape ? "max-h-[170px]" : "max-h-[300px]"}`}>
+                <div className={`token-menu-list bg-gray-800 text-white w-[200px] overflow-y-auto ${isMobileLandscape ? "max-h-[170px]" : "max-h-[300px]"}`}>
                   <div className="sticky top-0 z-10">
                     <input
                       type="text"
@@ -114,7 +115,6 @@ export default function TokenMenu({
                         setSearchKeyword(e.target.value);
                       }}
                     />
-                   
                   </div>
                   {listTokenState.map((token, index) => (
                     <MenuItem

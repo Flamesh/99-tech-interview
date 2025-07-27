@@ -43,6 +43,7 @@ export const getUserBalanceServices = async (): Promise<IUserBalance[]> => {
 
 export const fetchUserBalance = async (): Promise<IUserBalance[]> => {
   try {
+    console.log("Fetching user balance...");
     const response = await getUserBalanceServices();
     return response;
   } catch (error) {
